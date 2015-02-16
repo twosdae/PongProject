@@ -17,7 +17,6 @@ and open the template in the editor.
                 #ip {line-height:20px}
                 #port {line-height:20px}
                 #username {line-height:20px}
-                #userid {line-height:20px}
 		#body {max-width:800px;margin:auto}
 		#log {width:100%;height:200px}
 		#message {width:100%;line-height:20px}
@@ -61,6 +60,7 @@ and open the template in the editor.
                     Server.bind('open', function() {
                             document.getElementById("cntBtn").disabled = true;
                             log( "Connected." );
+                            
                     });
 
                     //OH NOES! Disconnection occurred.
@@ -71,7 +71,7 @@ and open the template in the editor.
 
                     //Log any messages sent from server
                     Server.bind('message', function( payload ) {                           
-                         
+                          
                             var res = payload.split(' ');
                             if(res[0] === "pong")
                             {
@@ -87,6 +87,8 @@ and open the template in the editor.
                     });
 
                     Server.connect();
+                    send("username " + document.getElementByID('username').value);
+                    //send('userid' + document.getElementById('port').value)
 //                    send("userid " + document.getElementById('userid'));
 //                    send("username " + document.getElementById('username'));)
             }
@@ -99,7 +101,6 @@ and open the template in the editor.
         Server ip: <input type='text' id='ip' name='ip'>
         Server port: <input type='text' id='port' name='port'>
         User name:  <input type='text' id='username' name='username'>
-        User ID:  <input type='text' id='userid' name='userid'>
         <button type="button" id='cntBtn' onclick="connect();">Connect</button>
         <script src ="PongGame.js"></script>
         <script>
@@ -139,11 +140,11 @@ and open the template in the editor.
                 {
                     send( "paddleUp" );
                 }
-
-                if(isKeyDown(83))
+                else if(isKeyDown(83))
                 {
                    send("paddleDown" );
                 }
+            
                 
                 pongGame.render();
                 

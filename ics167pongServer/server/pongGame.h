@@ -15,21 +15,26 @@
 const int WIDTH = 600;
 const int HEIGHT = 400;
 
+
 class PongGame
 {
 public:
 	int playerHits;
+	bool GameOn;
 	PongGame()
 	{
 		playerHits = 0;
 		ball = Ball(WIDTH/2, HEIGHT/2, 250,1,1);
 		paddle = Paddle(20,50,10,60, 250);
+		GameOn = false;
 	}
-
+	
 	void update();
 	std::string getGameState();
 	void movePaddleUp();
 	void movePaddleDown();
+	void start();
+	void end();
 private:
 	class Paddle
 	{

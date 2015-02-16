@@ -48,7 +48,7 @@ typedef void (*messageCallback)(int, string);
 #define WS_TIMEOUT_RECV 10
 #define WS_TIMEOUT_PONG 5
 
-const int BACK_LOG = 1;
+const int BACK_LOG = 11;
 
 class wsClient{
 public:

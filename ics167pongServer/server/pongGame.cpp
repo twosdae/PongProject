@@ -7,15 +7,31 @@
 
 #include "pongGame.h"
 
+void PongGame::end()
+{
+	GameOn=false;
+	this->ball.x=WIDTH/2;
+	this->ball.y=HEIGHT/2;
+	
+}
+
+void PongGame::start()
+{
+	GameOn=true;
+}
+
 void PongGame::update()
 {
-	if(ball.paddleHit(paddle))
+	if(GameOn==true)
 	{
-		ball.xDir = -ball.xDir;
-		playerHits++;
-	}
+		if(ball.paddleHit(paddle))
+		{
+			ball.xDir = -ball.xDir;
+			playerHits++;
+		}
 
-	ball.move();
+		ball.move();
+	}
 }
 
 std::string PongGame::getGameState()

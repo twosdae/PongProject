@@ -10,12 +10,21 @@ using namespace std;
 
 webSocket server;
 PongGame pongGame;
-bool gameInprogress = false;
+
+int numPlayers;
+
 
 /* called when a client connects */
 void openHandler(int clientID){
     ostringstream os;
     os << "Stranger " << clientID << " has joined.";
+	numPlayers++;
+	if(numPlayers>2)
+	{
+		cout<<"Too many People. I'm kicking this guy." << endl;
+		server.wsSend(clientID, "There are too many people on the server.");
+		server.wsClose(clientID);
+	}
 
     vector<int> clientIDs = server.getClientIDs();
     for (int i = 0; i < clientIDs.size(); i++){
@@ -30,7 +39,7 @@ void openHandler(int clientID){
 void closeHandler(int clientID){
     ostringstream os;
     os << "Stranger " << clientID << " has leaved.";
-
+	numPlayers--;
     vector<int> clientIDs = server.getClientIDs();
     for (int i = 0; i < clientIDs.size(); i++){
         if (clientIDs[i] != clientID)
@@ -82,9 +91,20 @@ void periodicHandler(){
     		for (int i = 0; i < clientIDs.size(); i++)
     		            server.wsSend(clientIDs[i], oh.str());
 		}
-
-        pongGame.update();
-        ostringstream os;
+		
+		if(numPlayers==2 && pongGame.GameOn==false)
+		{
+			pongGame.start();
+		}
+		if(numPlayers<2 && pongGame.GameOn==true)
+		{
+			pongGame.end();
+		}
+		if(pongGame.GameOn==true)
+		{
+			pongGame.update();
+		}
+		ostringstream os;
 
 
         os << "pong" << " " <<  pongGame.getGameState();
@@ -98,7 +118,7 @@ void periodicHandler(){
 
 int main(int argc, char *argv[]){
     int port;
-
+	numPlayers = 0;
     cout << "Please set server port: ";
     cin >> port;
 
