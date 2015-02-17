@@ -24,7 +24,7 @@ void PongGame::update()
 {
 	if(GameOn==true)
 	{
-		if(ball.paddleHit(paddle))
+		if(ball.paddleHit(paddle1) || ball.paddleHit(paddle2))
 		{
 			ball.xDir = -ball.xDir;
 			playerHits++;
@@ -38,27 +38,51 @@ std::string PongGame::getGameState()
 {
 	char ballX[10];
 	char ballY[10];
-	char paddleX[10];
-	char paddleY[10];
+	char paddle1X[10];
+	char paddle1Y[10];
+	char paddle2X[10];
+	char paddle2Y[10];
 	itoa(ball.x, ballX, 10);
 	itoa(ball.y, ballY, 10);
-	itoa(paddle.x, paddleX, 10);
-	itoa(paddle.y, paddleY, 10);
-	std::string posStr = std::string(ballX) + " " + std::string(ballY) + " "+ std::string(paddleX) + " " + std::string(paddleY);
+	itoa(paddle1.x, paddle1X, 10);
+	itoa(paddle1.y, paddle1Y, 10);
+	itoa(paddle2.x, paddle2X, 10);
+	itoa(paddle2.y, paddle2Y, 10);
+	std::string posStr = std::string(ballX) + " " + std::string(ballY) + " ";
+	posStr = posStr + std::string(paddle1X) + " " + std::string(paddle1Y) + " ";
+	posStr = posStr + std::string(paddle2X) + " " + std::string(paddle2Y);
 	//std::cout << posStr + '\n';
 
 	return posStr;
 }
 
-void PongGame::movePaddleUp()
+void PongGame::movePaddleUp(int paddle)
 {
-	paddle.moveUp();
+
+	if(paddle == 1)
+	{
+		paddle1.moveUp();
+	}
+	else
+	{
+		paddle2.moveUp();
+	}
+
 }
 
-void PongGame::movePaddleDown()
+void PongGame::movePaddleDown(int paddle)
 {
-	paddle.moveDown();
+	if(paddle == 1)
+	{
+		paddle1.moveDown();
+	}
+	else
+	{
+		paddle2.moveDown();
+	}
 }
+
+
 
 void PongGame::Paddle::moveUp()
 {
@@ -77,9 +101,25 @@ bool PongGame::Ball::paddleHit(PongGame::Paddle paddle)
 
 	if(this->xDir < 0
 	&& this->x <= paddle.x+paddle.width && this->x >= paddle.x
-	&& this->y >= paddle.y && this->y+10 <= paddle.y+paddle.height)
+	&& this->y >= paddle.y && this->y+10 <= paddle.y+paddle.height
+	&& justHit==0)
 	{
 		hit = true;
+		justHit=10;
+	}
+	else if(
+	   this->xDir > 0
+	&& this->x+10 >= paddle.x && this->x+10 <= paddle.x+paddle.width
+	&& this->y >= paddle.y && this->y+10 <= paddle.y+paddle.height
+	&& justHit==0)
+	{
+		hit = true;
+		justHit=10;
+	}
+
+	if(justHit>0)
+	{
+		justHit--;
 	}
 
 	return hit;
@@ -93,11 +133,11 @@ void PongGame::Ball::move()
 	}
 
 
-	if(this->x >= WIDTH-10)
-	{
-	  this->xDir = -this->xDir;
-	}
-	else if(this->x < 0)
+//	if(this->x >= WIDTH-10)
+//	{
+//	  this->xDir = -this->xDir;
+//	}
+	if(this->x < 0 || this->x > 590)
 	{
 	  this->x = WIDTH/2;
 	  this->y = HEIGHT/2;

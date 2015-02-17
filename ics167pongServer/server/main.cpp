@@ -8,10 +8,23 @@
 
 using namespace std;
 
+struct PlayerInfo
+{
+	std::string playerName;
+	int clientID;
+	int score;
+};
+
 webSocket server;
 PongGame pongGame;
 
 int numPlayers;
+PlayerInfo player1;
+PlayerInfo player2;
+
+
+
+
 
 
 /* called when a client connects */
@@ -52,15 +65,34 @@ void messageHandler(int clientID, string message){
 
 	if(message.compare("paddleUp") == 0)
     {
-		pongGame.movePaddleUp();
+		pongGame.movePaddleUp(clientID+1);
     }
 	else if(message.compare("paddleDown") == 0)
 	{
-		pongGame.movePaddleDown();
+		pongGame.movePaddleDown(clientID+1);
 	}
 	else
 	{
+		std::istringstream ss(message);
+		std::string token;
+		std::getline(ss, token, ' ');
 
+		if(token.compare("username"))
+		{
+			std::getline(ss, token, ' ');
+			if(clientID == 0)
+			{
+				player1.playerName = token;
+				player1.clientID = clientID;
+				std::cout << "Player1: " + player1.playerName << '\n';
+			}
+			else if(clientID == 1)
+			{
+				player2.playerName = token;
+				player2.clientID = clientID;
+				std::cout << "Player2: " + player2.playerName << '\n';
+			}
+		}
 	}
 
 

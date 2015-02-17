@@ -25,14 +25,15 @@ public:
 	{
 		playerHits = 0;
 		ball = Ball(WIDTH/2, HEIGHT/2, 250,1,1);
-		paddle = Paddle(20,50,10,60, 250);
+		paddle1 = Paddle(20,50,10,60, 250);
+		paddle2 = Paddle(570,50,10,60, 250);
 		GameOn = false;
 	}
 	
 	void update();
 	std::string getGameState();
-	void movePaddleUp();
-	void movePaddleDown();
+	void movePaddleUp(int paddle);
+	void movePaddleDown(int paddle);
 	void start();
 	void end();
 private:
@@ -70,6 +71,7 @@ private:
 		int speed;
 		int xDir;
 		int yDir;
+		int justHit;
 
 		Ball()
 		{
@@ -83,6 +85,8 @@ private:
 			this->speed = speed;
 			this->xDir = xDir;
 			this->yDir = yDir;
+
+			justHit = 0;
 		}
 
 		bool paddleHit(Paddle p);
@@ -91,7 +95,8 @@ private:
 
 
 	Ball ball;
-	Paddle paddle;
+	Paddle paddle1;
+	Paddle paddle2;
 
 };
 
