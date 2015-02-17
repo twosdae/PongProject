@@ -17,7 +17,6 @@ function PongGame()
     
     var ball = new Ball(width/2, height/2, 250,1,1);
     var player1 = new Paddle(20,50,10,60, 250);
-    var player2 = new Paddle(570,50,10,60, 250);
     
     function Ball(x, y, speed, xDir, yDir)
     {
@@ -100,19 +99,10 @@ function PongGame()
         };
     }
 
-    this.setPaddlePos = function(paddleNum,x,y)
+    this.setPaddlePos = function(x,y)
     {
-        if(paddleNum == 1)
-        {
-            player1.x = x;
-            player1.y = y;
-        }
-        else
-        {
-            player2.x = x;
-            player2.y = y;
-        }
-        
+        player1.x = x;
+        player1.y = y;
     };
     //window.addEventListener("keydown", function(event)
     //{
@@ -130,7 +120,7 @@ function PongGame()
 
         ball.render();
         player1.render();
-        player2.render();
+        //player2.render();
     };
 
 
