@@ -28,8 +28,10 @@ and open the template in the editor.
             
             var ballx = 100;
             var bally = 100;
-            var paddlex = 20;
-            var paddley = 50;
+            var paddle1x = 20;
+            var paddle1y = 50;
+            var paddle2x = 570;
+            var paddle2y = 50;
             
             function log( text ) {
                     $log = $('#log');
@@ -71,14 +73,16 @@ and open the template in the editor.
 
                     //Log any messages sent from server
                     Server.bind('message', function( payload ) {                           
-                          
+                            //log(payload);
                             var res = payload.split(' ');
                             if(res[0] === "pong")
                             {
                                 ballx = parseInt(res[1]);
                                 bally = parseInt(res[2]);
-                                paddlex = parseInt(res[3]);
-                                paddley = parseInt(res[4]);
+                                paddle1x = parseInt(res[3]);
+                                paddle1y = parseInt(res[4]);
+                                paddle2x = parseInt(res[5]);
+                                paddle2y = parseInt(res[6]);
                             }
                             else if(res[0] == "hit")
                             {
@@ -134,7 +138,8 @@ and open the template in the editor.
             function playGame()
             {
                 pongGame.setBallPos(ballx, bally);
-                pongGame.setPaddlePos(paddlex,paddley);
+                pongGame.setPaddlePos(1,paddle1x,paddle1y);
+                pongGame.setPaddlePos(2,paddle2x,paddle2y);
                 
                 if(isKeyDown(87))
                 {
