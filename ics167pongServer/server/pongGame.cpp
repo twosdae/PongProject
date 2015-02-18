@@ -24,6 +24,8 @@ void PongGame::end()
 	GameOn=false;
 	this->ball.x=WIDTH/2;
 	this->ball.y=HEIGHT/2;
+	p1Score = 0;
+	p2Score = 0;
 	
 }
 
