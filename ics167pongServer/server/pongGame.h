@@ -19,8 +19,14 @@ const int HEIGHT = 400;
 class PongGame
 {
 public:
+	
+	
 	int playerHits;
 	bool GameOn;
+	int p1Score;
+	int p2Score;
+	
+
 	PongGame()
 	{
 		playerHits = 0;
@@ -28,15 +34,19 @@ public:
 		paddle1 = Paddle(20,50,10,60, 250);
 		paddle2 = Paddle(570,50,10,60, 250);
 		GameOn = false;
+		p1Score = 0;
+		p2Score = 0;
 	}
-	
+	int getScore(int player);
 	void update();
 	std::string getGameState();
 	void movePaddleUp(int paddle);
 	void movePaddleDown(int paddle);
 	void start();
 	void end();
+	void score(int player);
 private:
+	
 	class Paddle
 	{
 	public:
@@ -90,7 +100,7 @@ private:
 		}
 
 		bool paddleHit(Paddle p);
-		void move();
+		int move();
 	};
 
 

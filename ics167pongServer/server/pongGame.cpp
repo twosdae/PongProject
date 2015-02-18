@@ -7,6 +7,18 @@
 
 #include "pongGame.h"
 
+int PongGame::getScore(int player)
+{
+	if(player==1)
+	{
+		return p1Score;
+	}
+	else if(player==2)
+	{
+		return p2Score;
+	}
+}
+
 void PongGame::end()
 {
 	GameOn=false;
@@ -30,7 +42,17 @@ void PongGame::update()
 			playerHits++;
 		}
 
-		ball.move();
+		int goal = ball.move();
+
+		if(goal == -1)
+		{
+			p2Score++;
+		}
+		else if(goal == 1)
+		{
+			p1Score++;
+		}
+
 	}
 }
 
@@ -125,8 +147,9 @@ bool PongGame::Ball::paddleHit(PongGame::Paddle paddle)
 	return hit;
 }
 
-void PongGame::Ball::move()
+int PongGame::Ball::move()
 {
+	int goal = 0;
 	if(this->y >= HEIGHT-10 || this->y < 0)
 	{
 		this->yDir = -this->yDir;
@@ -139,10 +162,22 @@ void PongGame::Ball::move()
 //	}
 	if(this->x < 0 || this->x > 590)
 	{
+		if(this->x<0)
+		{
+			goal = -1;
+		}
+		if(this->x>590)
+		{
+			goal = 1;
+		}
+
+
 	  this->x = WIDTH/2;
 	  this->y = HEIGHT/2;
 	  this->xDir = -this->xDir;
 	  this->yDir = -this->yDir;
+
+	  return goal;
 	}
 
 	this->x = this->x + this->xDir*speed/60;

@@ -7,25 +7,20 @@
 #include "pongGame.h"
 
 using namespace std;
-
 struct PlayerInfo
-{
-	std::string playerName;
-	int clientID;
-	int score;
-};
+	{
+		std::string playerName;
+		int clientID;
+		int score;
+	};
+
+	PlayerInfo player1;
+	PlayerInfo player2;
 
 webSocket server;
 PongGame pongGame;
 
 int numPlayers;
-PlayerInfo player1;
-PlayerInfo player2;
-
-
-
-
-
 
 /* called when a client connects */
 void openHandler(int clientID){
@@ -62,6 +57,7 @@ void closeHandler(int clientID){
 
 /* called when a client sends a message to the server */
 void messageHandler(int clientID, string message){
+	cout << message << endl;
 
 	if(message.compare("paddleUp") == 0)
     {
@@ -73,11 +69,12 @@ void messageHandler(int clientID, string message){
 	}
 	else
 	{
+		cout << "I got user nickname" << endl;
 		std::istringstream ss(message);
 		std::string token;
 		std::getline(ss, token, ' ');
 
-		if(token.compare("username"))
+		if(token.compare("username")==0)
 		{
 			std::getline(ss, token, ' ');
 			if(clientID == 0)
@@ -127,6 +124,12 @@ void periodicHandler(){
 		if(numPlayers==2 && pongGame.GameOn==false)
 		{
 			pongGame.start();
+			ostringstream oh;
+			ostringstream ohh;
+			oh << "enemyname " << player2.playerName;
+			server.wsSend(0, oh.str());
+			ohh << "enemyname " << player1.playerName;
+			server.wsSend(1, ohh.str());
 		}
 		if(numPlayers<2 && pongGame.GameOn==true)
 		{
@@ -135,6 +138,26 @@ void periodicHandler(){
 		if(pongGame.GameOn==true)
 		{
 			pongGame.update();
+			int newscore1 = pongGame.getScore(1);
+			int newscore2 = pongGame.getScore(2);
+
+			if(player1.score != newscore1 || player2.score != newscore2)
+			{
+				player1.score = newscore1;
+				player2.score = newscore2;
+				char score1[10];
+    			itoa(newscore1,score1,10);
+				char score2[10];
+				itoa(newscore2,score2,10);
+
+				ostringstream oh;
+				oh << "score " << std::string(score1) << ' ' << std::string(score2);
+				server.wsSend(0, oh.str());
+				server.wsSend(1, oh.str());
+
+			}
+
+
 		}
 		ostringstream os;
 
