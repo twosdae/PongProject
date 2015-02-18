@@ -25,13 +25,18 @@ and open the template in the editor.
 	<script src="fancywebsocket.js"></script>
 	<script>
             var Server;
-            
+            var connected = false;
             var ballx = 100;
             var bally = 100;
             var paddle1x = 20;
             var paddle1y = 50;
             var paddle2x = 570;
             var paddle2y = 50;
+            
+            var username = "";
+            var enemyname = "";
+            var userscore = 0;
+            var enemyscore = 0;
             
             function log( text ) {
                     $log = $('#log');
@@ -62,13 +67,16 @@ and open the template in the editor.
                     Server.bind('open', function() {
                             document.getElementById("cntBtn").disabled = true;
                             log( "Connected." );
-                            
+                            username = document.getElementById('username').value;
+                            log(username);
+                            send("username " + username);
                     });
 
                     //OH NOES! Disconnection occurred.
                     Server.bind('close', function( data ) {
                             document.getElementById("cntBtn").disabled = false;
                             log( "Disconnected." );
+                            connected = false;
                     });
 
                     //Log any messages sent from server
@@ -88,10 +96,21 @@ and open the template in the editor.
                             {
                                 log(res[0] + ":" + res[1]);
                             }
+                            else if(res[0] == "enemyname")
+                            {
+                                enemyname = res[1];
+                                log(enemyname);
+                            }
+                            else if(res[0] == "score")
+                            {
+                               // log(res[1] + ' ' + res[2]);
+                               userscore = res[1];
+                               enemyscore = res[2];
+                            }
                     });
 
                     Server.connect();
-                    send("username " + document.getElementByID('username').value);
+                    //send("topofpage");
                     //send('userid' + document.getElementById('port').value)
 //                    send("userid " + document.getElementById('userid'));
 //                    send("username " + document.getElementById('username'));)
@@ -110,6 +129,11 @@ and open the template in the editor.
         <script>
             var pongGame = new PongGame();
             var pressedKeys = {};
+            
+//            if(connected)
+//            {
+//                send("username " + document.getElementById('username').value);
+//            }
             
             document.addEventListener("keydown", function(event)
             {
@@ -137,13 +161,15 @@ and open the template in the editor.
             
             function playGame()
             {
+                
                 pongGame.setBallPos(ballx, bally);
                 pongGame.setPaddlePos(1,paddle1x,paddle1y);
                 pongGame.setPaddlePos(2,paddle2x,paddle2y);
                 
+             
                 if(isKeyDown(87))
                 {
-                    send( "paddleUp" );
+                    send( "paddleUp");
                 }
                 else if(isKeyDown(83))
                 {

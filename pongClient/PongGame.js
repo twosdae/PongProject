@@ -128,6 +128,12 @@ function PongGame()
         context.fillStyle = "black";
         context.fillRect(0,0,width, height);
 
+        context.fillStyle = "white";
+        context.fillText(username, 100, 10);
+        context.fillText(userscore,100, 20);
+        context.fillText(enemyname, 400, 10);
+        context.fillText(enemyscore, 400, 20);
+        
         ball.render();
         player1.render();
         player2.render();
