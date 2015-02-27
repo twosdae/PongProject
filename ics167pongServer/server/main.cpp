@@ -5,6 +5,10 @@
 #include <time.h>
 #include "websocket.h"
 #include "pongGame.h"
+#include <windows.h>
+#include <stdio.h>
+
+SYSTEMTIME st;
 
 using namespace std;
 struct PlayerInfo
@@ -104,8 +108,14 @@ void messageHandler(int clientID, string message){
 
 /* called once per select() loop */
 void periodicHandler(){
+	static bool send = true;
+	static string stateStr = "";
+	static DWORD timeWord;
+	static DWORD sendTime = GetTickCount() + 300;
 	static DWORD next = GetTickCount() + 15;
 	static int hitCount = 0;
+
+
 	DWORD currentTime = GetTickCount();
     if (currentTime >= next ){
 
@@ -159,12 +169,25 @@ void periodicHandler(){
 
 
 		}
-		ostringstream os;
 
+		if(send)
+		{
+			GetSystemTime(&st);
+			timeWord = st.wSecond*1000 + st.wMilliseconds;
+			stateStr = pongGame.getGameState();
+			send = false;
+		}
 
-        os << "pong" << " " <<  pongGame.getGameState();
-        for (int i = 0; i < clientIDs.size(); i++)
-            server.wsSend(clientIDs[i], os.str());
+		if(currentTime >= sendTime)
+		{
+			ostringstream os;
+	        os << "pong" << " " << stateStr << " " << timeWord;
+	        for (int i = 0; i < clientIDs.size(); i++)
+	        	 server.wsSend(clientIDs[i], os.str());
+
+	        sendTime = GetTickCount() + 300;
+	        send = true;
+		}
 
        // next = time(NULL) + 1;
         next = GetTickCount() + 15;
