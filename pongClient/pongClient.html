@@ -100,7 +100,7 @@ and open the template in the editor.
                                 
                                 date = new Date();
                                 latency = date.getSeconds()*1000 + date.getMilliseconds();
-                                latency = latency - res[7];
+                                latency = latency - res[8];
                                 log(latency);
 //                                if(!ticking && connected)
 //                                {
@@ -127,17 +127,7 @@ and open the template in the editor.
                                userscore = res[1];
                                enemyscore = res[2];
                             }
-                            else if(res[0] == "time")
-                            {
-                               send("time");
-                            }
-                            else if(res[0] == "clientTime")
-                            {
-                                ticking = false;
-                                date = new Date();
-                                latency = date.getTime() - tickTime;
-                                log(latency);
-                            }
+                           
                             
                     });
 
@@ -200,11 +190,13 @@ and open the template in the editor.
                 
                 if(isKeyDown(87))
                 {
-                    send( "paddleUp");
+                    date = new Date();
+                    send( "paddleUp " + (date.getSeconds()*1000 + date.getMilliseconds()));
                 }
                 else if(isKeyDown(83))
                 {
-                   send("paddleDown" );
+                   date = new Date();
+                   send("paddleDown " + (date.getSeconds()*1000 + date.getMilliseconds()));
                    
                 }
      
