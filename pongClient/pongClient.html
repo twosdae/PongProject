@@ -38,6 +38,11 @@ and open the template in the editor.
             var userscore = 0;
             var enemyscore = 0;
             
+            var date = new Date();
+            var tickTime = date.getTime();
+            var ticking = false;
+            var latency = 0;
+            
             function log( text ) {
                     $log = $('#log');
                     //Add text to log
@@ -70,6 +75,7 @@ and open the template in the editor.
                             username = document.getElementById('username').value;
                             log(username);
                             send("username " + username);
+                            connected = true;
                     });
 
                     //OH NOES! Disconnection occurred.
@@ -91,6 +97,20 @@ and open the template in the editor.
                                 paddle1y = parseInt(res[4]);
                                 paddle2x = parseInt(res[5]);
                                 paddle2y = parseInt(res[6]);
+                                
+                                date = new Date();
+                                latency = date.getSeconds()*1000 + date.getMilliseconds();
+                                latency = latency - res[7];
+                                log(latency);
+//                                if(!ticking && connected)
+//                                {
+//                                    date = new Date();
+//                                    tickTime = date.getTime();
+//                                    //wlog(tickTIme);
+//                                    ticking = true;
+//                                    send("clientTime");
+//                                }
+                                //log(res[7]);
                             }
                             else if(res[0] == "hit")
                             {
@@ -107,6 +127,18 @@ and open the template in the editor.
                                userscore = res[1];
                                enemyscore = res[2];
                             }
+                            else if(res[0] == "time")
+                            {
+                               send("time");
+                            }
+                            else if(res[0] == "clientTime")
+                            {
+                                ticking = false;
+                                date = new Date();
+                                latency = date.getTime() - tickTime;
+                                log(latency);
+                            }
+                            
                     });
 
                     Server.connect();
@@ -161,12 +193,11 @@ and open the template in the editor.
             
             function playGame()
             {
-                
+                //send("clientTime");
                 pongGame.setBallPos(ballx, bally);
                 pongGame.setPaddlePos(1,paddle1x,paddle1y);
                 pongGame.setPaddlePos(2,paddle2x,paddle2y);
                 
-             
                 if(isKeyDown(87))
                 {
                     send( "paddleUp");
@@ -174,9 +205,9 @@ and open the template in the editor.
                 else if(isKeyDown(83))
                 {
                    send("paddleDown" );
+                   
                 }
-            
-                
+     
                 pongGame.render();
                 
                 setTimeout(playGame, 1000/60);
